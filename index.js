@@ -1,4 +1,11 @@
 const fs = require('fs');
+const bencode = require('bencode');
 
-const torrent = fs.readFileSync('puppy.torrent');
-console.log(torrent.toString('utf8'));
+fs.readFile('puppy.torrent', (err, file) => {
+  if (err) {
+    console.log(err);
+    return;
+  }
+  const torrent = bencode.decode(file);
+  console.log(torrent.announce.toString('utf8'));
+});
