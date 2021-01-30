@@ -2,6 +2,31 @@ const dgram = require('dgram');
 const { Buffer } = require('buffer');
 const urlParse = require('url').parse;
 
+const udpSend = (socket, message, rawUrl, cb = () => {}) => {
+  const url = urlParse(rawUrl);
+  socket.send(message, 0, message.length, url.port, url.host, cb);
+};
+
+const respType = (res) => {
+
+};
+
+const buildConnReq = () => {
+
+};
+
+const parseConnResp = (res) => {
+
+};
+
+const buildAnnounceReq = (connId) => {
+
+};
+
+const parseAnnounceResp = (res) => {
+
+};
+
 const getPeers = (torrent, cb) => {
   const socket = dgram.createSocket('udp4');
   const url = torrent.announce.toString('utf8');
@@ -24,3 +49,5 @@ const getPeers = (torrent, cb) => {
     }
   });
 };
+
+module.exports = getPeers;
