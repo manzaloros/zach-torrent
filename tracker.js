@@ -27,9 +27,11 @@ const buildConnReq = () => {
   return buf;
 };
 
-const parseConnResp = (res) => {
-
-};
+const parseConnResp = (res) => ({
+  action: res.readUInt32BE(0),
+  transactionId: res.readUInt32BE(4),
+  connectionId: res.slice(8),
+});
 
 const buildAnnounceReq = (connId) => {
 
