@@ -11,8 +11,20 @@ const respType = (res) => {
 
 };
 
-const buildConnReq = () => {
+const crypto = require('crypto');
 
+const buildConnReq = () => {
+  const buf = Buffer.alloc(16);
+
+  // connection id
+  buf.writeUInt32BE(0x417, 0);
+  buf.writeUInt32BE(0x27101980, 4);
+  // action
+  buf.writeUInt32BE(0, 8);
+  // transaction id
+  crypto.randomBytes(4).copy(buf, 12);
+
+  return buf;
 };
 
 const parseConnResp = (res) => {
