@@ -1,8 +1,9 @@
 const dgram = require('dgram');
-const torrentParser = require('./torrent-parser');
-const util = require('./util');
+const crypto = require('crypto');
 const { Buffer } = require('buffer');
 const urlParse = require('url').parse;
+const torrentParser = require('./torrent-parser');
+const util = require('./util');
 
 const udpSend = (socket, message, rawUrl, cb = () => {}) => {
   const url = urlParse(rawUrl);
@@ -14,8 +15,6 @@ const respType = (res) => {
   if (action === 0) return 'connect';
   if (action === 1) return 'announce';
 };
-
-const crypto = require('crypto');
 
 const buildConnReq = () => {
   const buf = Buffer.alloc(16);
@@ -115,4 +114,4 @@ const getPeers = (torrent, cb) => {
   });
 };
 
-module.exports = getPeers;
+module.exports = { getPeers };
