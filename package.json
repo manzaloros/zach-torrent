@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "bencode": "^2.0.1",
+    "bignum": "^0.13.1",
     "dgram": "^1.0.1"
   }
 }

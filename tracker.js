@@ -10,7 +10,9 @@ const udpSend = (socket, message, rawUrl, cb = () => {}) => {
 };
 
 const respType = (res) => {
-
+  const action = res.readUInt32BE(0);
+  if (action === 0) return 'connect';
+  if (action === 1) return 'announce';
 };
 
 const crypto = require('crypto');
