@@ -35,7 +35,7 @@ const parseConnResp = (res) => ({
   connectionId: res.slice(8),
 });
 
-const buildAnnounceReq = (connId, torrent, port = 6881) => {
+const buildAnnounceReq = (connId, torrent, port = 6681) => {
   const buf = Buffer.allocUnsafe(98);
 
   // connection id
@@ -61,7 +61,7 @@ const buildAnnounceReq = (connId, torrent, port = 6881) => {
   // key
   crypto.randomBytes(4).copy(buf, 88);
   // num want
-  buf.writeUInt32BE(-1, 92);
+  buf.writeInt32BE(-1, 92);
   // port
   buf.writeUInt32BE(port, 96);
 
@@ -69,7 +69,23 @@ const buildAnnounceReq = (connId, torrent, port = 6881) => {
 };
 
 const parseAnnounceResp = (res) => {
+  const group = (iterable, groupSize, groups = []) => {
+    for (let i = 0; i < iterable.length; i += groupSize) {
+      groups.push(iterable.slice(i, i + groupSize));
+    }
+    return groups;
+  };
 
+  return {
+    action: res.readUInt32BE(0),
+    transactionId: res.readUInt32BE(4),
+    leechers: res.readUInt32BE(8),
+    seeders: res.readUInt32BE(12),
+    peers: group(res.slice(20), 6).map((address) => ({
+      ip: address.slice(0, 4).join('.'),
+      port: address.readUInt32BE(4),
+    })),
+  };
 };
 
 const getPeers = (torrent, cb) => {
@@ -79,7 +95,7 @@ const getPeers = (torrent, cb) => {
   // Send connection request
   udpSend(socket, buildConnReq(), url);
 
-  const announceReq = buildAnnounceReq(connId, torrent, port = 6881);
+  const announceReq = buildAnnounceReq(connResp.connectionId, torrent);
 
   socket.on('message', (res) => {
     if (respType(res) === 'connect') {
