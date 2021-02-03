@@ -1,11 +1,7 @@
-const fs = require('fs');
-const bencode = require('bencode');
-const torrentParser = require('./torrent-parser');
-const tracker = require('./tracker');
+const torrentParser = require('./src/torrent-parser');
+const download = require('./src/download');
+const tracker = require('./src/tracker');
 
-console.log(typeof tracker);
-const torrent = torrentParser.open('puppy.torrent');
+const torrent = torrentParser.open(process.argv[2]);
 
-tracker.getPeers(torrent, (peers) => {
-  console.log(`list of peers: ${peers}`);
-});
+download(torrent);
